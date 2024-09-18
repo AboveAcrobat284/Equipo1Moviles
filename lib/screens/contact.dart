@@ -28,6 +28,16 @@ class ContactScreen extends StatelessWidget {
     }
   }
 
+  // Función para abrir una URL (enlace a GitHub)
+  void _openGitHubRepo() async {
+    final Uri githubUri = Uri.parse('https://github.com/AboveAcrobat284/Equipo1Moviles.git');
+    if (await canLaunchUrl(githubUri)) {
+      await launchUrl(githubUri); // Abre la URL
+    } else {
+      throw 'No se pudo abrir el repositorio de GitHub'; // Manejo de error
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,18 +53,21 @@ class ContactScreen extends StatelessWidget {
             'Carlos Eduardo Gumeta Navarro',
             '221199',
             '9711315960',
+            true, // Indicamos que este contacto incluye el botón del enlace a GitHub
           ),
           _buildContactItem(
             context,
             'Jesus Alejandro Guillen Luna',
             '221198',
             '9651052289',
+            false, // Sin botón de GitHub
           ),
           _buildContactItem(
             context,
             'Joel de Jesús López Ruíz',
             '221204',
             '9661130883',
+            false, // Sin botón de GitHub
           ),
         ],
       ),
@@ -62,28 +75,48 @@ class ContactScreen extends StatelessWidget {
   }
 
   // Widget que construye cada contacto de la lista
-  Widget _buildContactItem(BuildContext context, String name, String id, String phone) {
+  Widget _buildContactItem(BuildContext context, String name, String id, String phone, bool showGithubButton) {
     return Card(
-      child: ListTile(
-        title: Text(name), // Nombre del contacto
-        subtitle: Text('ID: $id'), // ID del contacto
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min, // Ajustamos el tamaño de la fila
-          children: [
-            // Botón para enviar mensaje
-            IconButton(
-              icon: const Icon(Icons.message),
-              onPressed: () => _sendMessage(phone), // Llamamos a la función para enviar mensaje
-              tooltip: 'Enviar mensaje', // Tooltip
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(name), // Nombre del contacto
+            subtitle: Text('ID: $id'), // ID del contacto
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min, // Ajustamos el tamaño de la fila
+              children: [
+                // Botón para enviar mensaje
+                IconButton(
+                  icon: const Icon(Icons.message),
+                  onPressed: () => _sendMessage(phone), // Llamamos a la función para enviar mensaje
+                  tooltip: 'Enviar mensaje', // Tooltip
+                ),
+                // Botón para hacer una llamada
+                IconButton(
+                  icon: const Icon(Icons.call),
+                  onPressed: () => _makeCall(phone), // Llamamos a la función para hacer la llamada
+                  tooltip: 'Llamar', // Tooltip
+                ),
+              ],
             ),
-            // Botón para hacer una llamada
-            IconButton(
-              icon: const Icon(Icons.call),
-              onPressed: () => _makeCall(phone), // Llamamos a la función para hacer la llamada
-              tooltip: 'Llamar', // Tooltip
+          ),
+          if (showGithubButton) // Si es cierto, mostramos el botón del enlace a GitHub
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white, // Fondo blanco
+                ),
+                onPressed: _openGitHubRepo, // Función que abre el enlace
+                child: const Text(
+                  'Ir al Repositorio de GitHub',
+                  style: TextStyle(
+                    color: Colors.blue, // Texto en azul
+                  ),
+                ),
+              ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
