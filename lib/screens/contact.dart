@@ -31,12 +31,13 @@ class ContactScreen extends StatelessWidget {
   // Función para abrir una URL (enlace a GitHub)
   void _openGitHubRepo() async {
     final Uri githubUri = Uri.parse('https://github.com/AboveAcrobat284/Equipo1Moviles.git');
-    if (await canLaunchUrl(githubUri)) {
-      await launchUrl(githubUri); // Abre la URL
-    } else {
-      throw 'No se pudo abrir el repositorio de GitHub'; // Manejo de error
+    try {
+      await launchUrl(githubUri); // Intentamos abrir la URL directamente
+    } catch (e) {
+      throw 'No se pudo abrir el repositorio de GitHub: $e'; // Mostrar error específico
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
